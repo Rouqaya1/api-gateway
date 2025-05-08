@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Import la config de base Spring Boot -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <!-- Required for Loglevel managment into the Spring Petclinic Admin Server-->
+
+    <!-- JMX configurator pour changer le log level à chaud -->
     <jmxConfigurator/>
+
+    <!-- Loggers spécifiques pour éviter trop de verbosité -->
+    <logger name="software.amazon.awssdk" level="WARN"/>
+    <logger name="io.micrometer" level="INFO"/>
+    <logger name="org.springframework.cloud" level="INFO"/>
+
+    <!-- Appender fichier optionnel -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/api-gateway.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/api-gateway.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
 </configuration>
